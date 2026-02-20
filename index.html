@@ -1,0 +1,632 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+<title>中1単語帳</title>
+<style>
+  * { box-sizing: border-box; }
+  body {
+    font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+    background-color: #F2F2F7;
+    color: #1C1C1E;
+    touch-action: manipulation;
+    overscroll-behavior-y: none;
+    -webkit-tap-highlight-color: transparent;
+    margin: 0; padding: 0; padding-bottom: env(safe-area-inset-bottom);
+  }
+  .hidden { display: none !important; }
+  .fade-in { animation: fadeIn 0.3s ease-out; }
+  @keyframes fadeIn { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: translateY(0); } }
+  .min-h-screen { min-height: 100vh; display: flex; flex-direction: column; }
+  .max-w-4xl { max-width: 56rem; margin: 0 auto; width: 100%; }
+  .max-w-2xl { max-width: 42rem; margin: 0 auto; width: 100%; display: flex; flex-direction: column; flex: 1; }
+  .px-6 { padding-left: 1.5rem; padding-right: 1.5rem; }
+  .py-12 { padding-top: 3rem; padding-bottom: 3rem; }
+  .mb-8 { margin-bottom: 2rem; }
+  .mb-10 { margin-bottom: 2.5rem; }
+  .mt-1 { margin-top: 0.25rem; }
+  .mt-4 { margin-top: 1rem; }
+  .mt-12 { margin-top: 3rem; }
+  .mb-4 { margin-bottom: 1rem; }
+  .mb-2 { margin-bottom: 0.5rem; }
+  .mb-6 { margin-bottom: 1.5rem; }
+  .text-4xl { font-size: 2.25rem; line-height: 2.5rem; font-weight: 700; }
+  .text-xl { font-size: 1.25rem; line-height: 1.75rem; font-weight: 700; }
+  .text-lg { font-size: 1.125rem; line-height: 1.75rem; font-weight: 600; }
+  .text-sm { font-size: 0.875rem; line-height: 1.25rem; }
+  .text-xs { font-size: 0.75rem; line-height: 1rem; }
+  .text-3xl { font-size: 1.875rem; line-height: 2.25rem; font-weight: 700; }
+  .text-6xl { font-size: 3.75rem; line-height: 1; }
+  .text-5xl { font-size: 3rem; line-height: 1; font-weight: 700; }
+  .font-semibold { font-weight: 600; }
+  .font-medium { font-weight: 500; }
+  .tracking-tight { letter-spacing: -0.025em; }
+  .text-center { text-align: center; }
+  .uppercase { text-transform: uppercase; }
+  .text-gray-500 { color: #6B7280; }
+  .text-gray-400 { color: #9CA3AF; }
+  .text-blue-500 { color: #007AFF; }
+  .text-white { color: #FFFFFF; }
+  .grid-2 { display: grid; grid-template-columns: repeat(2, 1fr); gap: 1rem; }
+  .grid-cats { display: grid; grid-template-columns: repeat(auto-fill, minmax(140px, 1fr)); gap: 1rem; }
+  .flex { display: flex; }
+  .flex-col { flex-direction: column; }
+  .justify-between { justify-content: space-between; }
+  .justify-center { justify-content: center; }
+  .items-center { align-items: center; }
+  .flex-1 { flex: 1 1 0%; }
+  .ios-card {
+    background: #FFFFFF;
+    border-radius: 16px;
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.04);
+    transition: transform 0.1s, box-shadow 0.1s;
+    border: none; outline: none; padding: 1.5rem;
+  }
+  .ios-card:active { transform: scale(0.98); }
+  button { cursor: pointer; border: none; background: none; font-family: inherit; }
+  .ios-btn:active { opacity: 0.7; transform: scale(0.98); }
+  .stat-card { position: relative; overflow: hidden; height: 8rem; display: flex; flex-direction: column; justify-content: space-between; }
+  .stat-icon { position: absolute; top: 0; right: 0; padding: 1rem; opacity: 0.1; }
+  .review-btn { width: 100%; border-left: 4px solid #FF3B30; display: flex; align-items: center; justify-content: space-between; text-align: left; }
+  .review-icon-box { background-color: rgba(255, 59, 48, 0.1); padding: 0.75rem; border-radius: 9999px; color: #FF3B30; font-size: 1.25rem; margin-right: 1rem; }
+  .cat-btn { height: 10rem; text-align: left; display: flex; flex-direction: column; justify-content: space-between; padding: 1rem; }
+  .progress-bg { width: 100%; background-color: #F3F4F6; border-radius: 9999px; height: 0.375rem; overflow: hidden; margin-top: 0.5rem; }
+  .progress-bar { height: 100%; border-radius: 9999px; transition: width 0.3s ease; }
+  .quiz-header { position: sticky; top: 0; z-index: 20; background-color: #F2F2F7; padding: 1.5rem 1.5rem 0.5rem 1.5rem; display: flex; justify-content: space-between; align-items: center; }
+  .back-btn { display: flex; align-items: center; color: #007AFF; font-size: 1.125rem; font-weight: 500; }
+  .progress-track { width: 100%; height: 0.25rem; background-color: #E5E7EB; }
+  .progress-fill { height: 100%; background-color: #007AFF; transition: width 0.3s; }
+  .quiz-content { flex: 1; display: flex; flex-direction: column; padding: 1.5rem; gap: 1.5rem; }
+  .flashcard { min-height: 250px; position: relative; display: flex; flex-direction: column; align-items: center; justify-content: center; text-align: center; }
+  .cat-badge { position: absolute; top: 1rem; left: 50%; transform: translateX(-50%); background-color: #F9FAFB; padding: 0.25rem 0.75rem; border-radius: 9999px; display: flex; align-items: center; gap: 0.5rem; }
+  .answer-en { font-size: 2.25rem; font-weight: 600; color: #007AFF; margin-right: 1rem; }
+  .speak-btn { padding: 0.5rem 0.75rem; border-radius: 9999px; background-color: #EFF6FF; color: #007AFF; font-size: 1.5rem; }
+  .mask-area { height: 4rem; display: flex; align-items: center; justify-content: center; opacity: 0.2; gap: 0.5rem; }
+  .mask-dot { width: 0.5rem; height: 0.5rem; border-radius: 9999px; background-color: #D1D5DB; }
+  .canvas-wrap { flex: 1; border-radius: 16px; background: white; display: flex; flex-direction: column; overflow: hidden; min-height: 200px; box-shadow: 0 2px 8px rgba(0,0,0,0.04); }
+  .canvas-header { padding: 0.75rem; background-color: #F9FAFB; border-bottom: 1px solid #F3F4F6; display: flex; justify-content: space-between; align-items: center; }
+  .clear-btn { color: #007AFF; background-color: white; border: 1px solid #DBEAFE; padding: 0.25rem 0.75rem; border-radius: 0.375rem; font-size: 0.75rem; font-weight: 500;}
+  canvas { touch-action: none; cursor: crosshair; display: block; width: 100%; height: 100%; flex: 1; }
+  .bottom-actions { height: 5rem; padding-bottom: 2rem; }
+  .big-btn { width: 100%; padding: 1.25rem; border-radius: 0.75rem; font-weight: 600; font-size: 1.125rem; box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1); }
+  .btn-blue { background-color: #007AFF; color: white; }
+  .btn-green { background-color: #34C759; color: white; display: flex; align-items: center; justify-content: center; gap: 0.5rem; }
+  .btn-red { background-color: #FF3B30; color: white; display: flex; align-items: center; justify-content: center; gap: 0.5rem; }
+  .btn-white { background-color: white; color: #007AFF; border: 1px solid #E5E7EB; }
+</style>
+</head>
+<body>
+  <div id="app" class="min-h-screen">
+    <div id="view-dashboard" class="max-w-4xl px-6 py-12 fade-in">
+      <div class="mb-8">
+        <h1 class="text-4xl">単語帳</h1>
+        <p class="font-medium mt-1 text-gray-500">中学1年生レベル • <span id="total-words-count">0</span>語</p>
+      </div>
+
+      <div class="grid-2 mb-10">
+        <div class="ios-card stat-card">
+          <div class="stat-icon text-6xl">🏆</div>
+          <span class="text-sm font-semibold text-gray-400 uppercase">Mastered</span>
+          <span id="mastered-count" class="text-4xl">0</span>
+        </div>
+        <div class="ios-card stat-card">
+          <div class="stat-icon text-6xl">🔄</div>
+          <span class="text-sm font-semibold text-gray-400 uppercase">Review</span>
+          <span id="review-count" class="text-4xl">0</span>
+        </div>
+      </div>
+
+      <div id="review-btn-area" class="hidden mb-8">
+        <button onclick="startQuiz('review')" class="ios-card review-btn ios-btn">
+          <div class="flex items-center">
+            <div class="review-icon-box">🔄</div>
+            <div>
+              <h3 class="font-semibold text-lg" style="color:#1C1C1E;">苦手克服</h3>
+              <p id="review-msg" class="text-sm text-gray-500">復習が必要です</p>
+            </div>
+          </div>
+          <span class="text-gray-400">➡️</span>
+        </button>
+      </div>
+
+      <h2 class="text-xl mb-4">カテゴリー</h2>
+      <div id="category-grid" class="grid-cats"></div>
+
+      <div class="mt-12 text-center">
+        <button onclick="resetData()" class="text-xs font-medium text-gray-400 p-4">学習データをリセット</button>
+      </div>
+    </div>
+
+    <div id="view-quiz" class="hidden max-w-2xl fade-in">
+      <div class="quiz-header">
+        <button onclick="showDashboard()" class="back-btn ios-btn">◀️ 戻る</button>
+        <div id="quiz-progress-text" class="text-sm font-semibold text-gray-500">1 / 10</div>
+      </div>
+      <div class="progress-track">
+        <div id="quiz-progress-bar" class="progress-fill" style="width: 0%"></div>
+      </div>
+
+      <div class="quiz-content">
+        <div class="ios-card flashcard">
+          <div class="cat-badge">
+            <span id="card-cat-icon"></span><span id="card-cat-label" class="text-xs font-medium text-gray-500"></span>
+          </div>
+
+          <h2 id="card-ja" class="text-5xl mb-8 mt-4">日本語</h2>
+
+          <div id="answer-area" class="hidden flex items-center flex-col fade-in">
+            <div class="flex items-center mb-6">
+              <span id="card-en" class="answer-en">English</span>
+              <button onclick="speakCurrentWord()" class="speak-btn ios-btn">🔊</button>
+            </div>
+          </div>
+          
+          <div id="mask-area" class="mask-area">
+            <div id="mask-dots" class="flex items-center justify-center gap-2"></div>
+          </div>
+        </div>
+
+        <div class="canvas-wrap relative">
+          <div class="canvas-header">
+            <span class="text-xs font-semibold text-gray-400 uppercase">Writing</span>
+            <button onclick="clearCanvas()" class="clear-btn ios-btn">消去</button>
+          </div>
+          <canvas id="drawing-canvas"></canvas>
+        </div>
+
+        <div class="bottom-actions">
+          <button id="btn-show-answer" onclick="showAnswer()" class="big-btn btn-blue ios-btn">
+            答えを表示
+          </button>
+          <div id="btn-grade-area" class="hidden grid-2">
+            <button onclick="grade(true)" class="big-btn btn-green ios-btn">✅ 正解</button>
+            <button onclick="grade(false)" class="big-btn btn-red ios-btn">❌ 不正解</button>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div id="view-result" class="hidden max-w-2xl flex-1 flex-col justify-center px-6 fade-in" style="display: none; align-items: center; padding-top: 10vh;">
+      <div class="ios-card p-16 mb-8 flex flex-col items-center justify-center w-full" style="text-align: center;">
+        <div class="w-24 h-24 bg-yellow-100 mb-6 text-6xl" style="border-radius: 50%; padding: 1.5rem;">🏆</div>
+        <h2 class="text-3xl mb-2">完了</h2>
+        <p class="text-gray-500 font-medium">お疲れ様でした！<br>学習記録を保存しました。</p>
+      </div>
+      <div class="flex flex-col w-full" style="gap: 1rem;">
+        <button onclick="showDashboard()" class="big-btn btn-blue ios-btn">ホームに戻る</button>
+        <button onclick="retryQuiz()" class="big-btn btn-white ios-btn">もう一度</button>
+      </div>
+    </div>
+  </div>
+
+  <script>
+    var CATEGORIES = {
+      all: { label: "全単語", icon: "⭐", color: "#FFCC00" },
+      numbers: { label: "数字", icon: "🔢", color: "#FF3B30" },
+      pronouns: { label: "代名詞", icon: "👤", color: "#007AFF" },
+      people: { label: "人・家族", icon: "👨‍👩‍👧", color: "#FFCC00" },
+      school: { label: "学校", icon: "🏫", color: "#34C759" },
+      verbs: { label: "動詞", icon: "🏃", color: "#AF52DE" },
+      adjectives: { label: "形容詞", icon: "✨", color: "#FF9500" },
+      time: { label: "時間・暦", icon: "📅", color: "#5856D6" },
+      nature: { label: "自然・天気", icon: "🌳", color: "#5AC8FA" },
+      places: { label: "場所", icon: "📍", color: "#007AFF" },
+      food: { label: "食べ物", icon: "🍔", color: "#FF2D55" },
+      animals: { label: "動物", icon: "🐶", color: "#34C759" },
+      body: { label: "体・健康", icon: "💪", color: "#FF3B30" },
+      daily: { label: "日用品・色", icon: "🎒", color: "#FF9500" },
+      others: { label: "その他", icon: "❓", color: "#8E8E93" }
+    };
+
+    var VOCABULARY_DATA = [
+      { id: 1, ja: "1", en: "one", category: "numbers" }, { id: 2, ja: "2", en: "two", category: "numbers" }, { id: 3, ja: "3", en: "three", category: "numbers" },
+      { id: 4, ja: "4", en: "four", category: "numbers" }, { id: 5, ja: "5", en: "five", category: "numbers" }, { id: 6, ja: "6", en: "six", category: "numbers" },
+      { id: 7, ja: "7", en: "seven", category: "numbers" }, { id: 8, ja: "8", en: "eight", category: "numbers" }, { id: 9, ja: "9", en: "nine", category: "numbers" },
+      { id: 10, ja: "10", en: "ten", category: "numbers" }, { id: 11, ja: "11", en: "eleven", category: "numbers" }, { id: 12, ja: "12", en: "twelve", category: "numbers" },
+      { id: 13, ja: "13", en: "thirteen", category: "numbers" }, { id: 14, ja: "14", en: "fourteen", category: "numbers" }, { id: 15, ja: "15", en: "fifteen", category: "numbers" },
+      { id: 16, ja: "16", en: "sixteen", category: "numbers" }, { id: 17, ja: "17", en: "seventeen", category: "numbers" }, { id: 18, ja: "18", en: "eighteen", category: "numbers" },
+      { id: 19, ja: "19", en: "nineteen", category: "numbers" }, { id: 20, ja: "20", en: "twenty", category: "numbers" }, { id: 21, ja: "30", en: "thirty", category: "numbers" },
+      { id: 22, ja: "40", en: "forty", category: "numbers" }, { id: 23, ja: "50", en: "fifty", category: "numbers" }, { id: 24, ja: "60", en: "sixty", category: "numbers" },
+      { id: 25, ja: "70", en: "seventy", category: "numbers" }, { id: 26, ja: "80", en: "eighty", category: "numbers" }, { id: 27, ja: "90", en: "ninety", category: "numbers" },
+      { id: 28, ja: "100", en: "hundred", category: "numbers" }, { id: 29, ja: "1000", en: "thousand", category: "numbers" }, { id: 30, ja: "0", en: "zero", category: "numbers" },
+      { id: 31, ja: "最初の/1日", en: "first", category: "numbers" }, { id: 32, ja: "2番目の/2日", en: "second", category: "numbers" }, { id: 33, ja: "3番目の/3日", en: "third", category: "numbers" },
+      { id: 40, ja: "私", en: "I", category: "pronouns" }, { id: 41, ja: "私の", en: "my", category: "pronouns" }, { id: 42, ja: "私を/に", en: "me", category: "pronouns" },
+      { id: 43, ja: "私のもの", en: "mine", category: "pronouns" }, { id: 44, ja: "あなた", en: "you", category: "pronouns" }, { id: 45, ja: "あなたの", en: "your", category: "pronouns" },
+      { id: 46, ja: "あなたのもの", en: "yours", category: "pronouns" }, { id: 47, ja: "彼", en: "he", category: "pronouns" }, { id: 48, ja: "彼の/彼のもの", en: "his", category: "pronouns" },
+      { id: 49, ja: "彼を/に", en: "him", category: "pronouns" }, { id: 50, ja: "彼女", en: "she", category: "pronouns" }, { id: 51, ja: "彼女の", en: "her", category: "pronouns" },
+      { id: 52, ja: "彼女のもの", en: "hers", category: "pronouns" }, { id: 53, ja: "私たち", en: "we", category: "pronouns" }, { id: 54, ja: "私たちの", en: "our", category: "pronouns" },
+      { id: 55, ja: "私たちを/に", en: "us", category: "pronouns" }, { id: 56, ja: "彼ら/それら", en: "they", category: "pronouns" }, { id: 57, ja: "彼らの", en: "their", category: "pronouns" },
+      { id: 58, ja: "彼らを/に", en: "them", category: "pronouns" }, { id: 59, ja: "それ", en: "it", category: "pronouns" }, { id: 60, ja: "これ", en: "this", category: "pronouns" },
+      { id: 61, ja: "あれ", en: "that", category: "pronouns" }, { id: 62, ja: "これら", en: "these", category: "pronouns" }, { id: 63, ja: "あれら", en: "those", category: "pronouns" },
+      { id: 64, ja: "それの", en: "its", category: "pronouns" },
+      { id: 70, ja: "家族", en: "family", category: "people" }, { id: 71, ja: "父", en: "father", category: "people" }, { id: 72, ja: "母", en: "mother", category: "people" },
+      { id: 73, ja: "兄/弟", en: "brother", category: "people" }, { id: 74, ja: "姉/妹", en: "sister", category: "people" }, { id: 75, ja: "両親", en: "parents", category: "people" },
+      { id: 76, ja: "祖父", en: "grandfather", category: "people" }, { id: 77, ja: "祖母", en: "grandmother", category: "people" }, { id: 78, ja: "男の子", en: "boy", category: "people" },
+      { id: 79, ja: "女の子", en: "girl", category: "people" }, { id: 80, ja: "男の人", en: "man", category: "people" }, { id: 81, ja: "女の人", en: "woman", category: "people" },
+      { id: 82, ja: "友達", en: "friend", category: "people" }, { id: 83, ja: "先生", en: "teacher", category: "people" }, { id: 84, ja: "生徒", en: "student", category: "people" },
+      { id: 85, ja: "医者", en: "doctor", category: "people" }, { id: 86, ja: "歌手", en: "singer", category: "people" }, { id: 87, ja: "選手", en: "player", category: "people" },
+      { id: 88, ja: "人々", en: "people", category: "people" }, { id: 89, ja: "子供", en: "child", category: "people" }, { id: 90, ja: "子供たち", en: "children", category: "people" },
+      { id: 91, ja: "お父さん(P)", en: "dad", category: "people" }, { id: 92, ja: "お母さん(M)", en: "mom", category: "people" }, { id: 93, ja: "おじ", en: "uncle", category: "people" },
+      { id: 94, ja: "おば", en: "aunt", category: "people" }, { id: 95, ja: "いとこ", en: "cousin", category: "people" }, { id: 96, ja: "王", en: "king", category: "people" },
+      { id: 97, ja: "女王", en: "queen", category: "people" }, { id: 98, ja: "英雄", en: "hero", category: "people" }, { id: 99, ja: "チームメイト", en: "teammate", category: "people" },
+      { id: 100, ja: "学校", en: "school", category: "school" }, { id: 101, ja: "教室", en: "classroom", category: "school" }, { id: 102, ja: "図書館", en: "library", category: "school" },
+      { id: 103, ja: "体育館", en: "gym", category: "school" }, { id: 104, ja: "ペン", en: "pen", category: "school" }, { id: 105, ja: "鉛筆", en: "pencil", category: "school" },
+      { id: 106, ja: "消しゴム", en: "eraser", category: "school" }, { id: 107, ja: "ノート", en: "notebook", category: "school" }, { id: 108, ja: "本", en: "book", category: "school" },
+      { id: 109, ja: "辞書", en: "dictionary", category: "school" }, { id: 110, ja: "机", en: "desk", category: "school" }, { id: 111, ja: "椅子", en: "chair", category: "school" },
+      { id: 112, ja: "黒板", en: "blackboard", category: "school" }, { id: 113, ja: "カバン", en: "bag", category: "school" }, { id: 114, ja: "宿題", en: "homework", category: "school" },
+      { id: 115, ja: "テスト", en: "test", category: "school" }, { id: 116, ja: "部活/クラブ", en: "club", category: "school" }, { id: 117, ja: "制服", en: "uniform", category: "school" },
+      { id: 118, ja: "授業", en: "class", category: "school" }, { id: 119, ja: "教科", en: "subject", category: "school" }, { id: 120, ja: "英語", en: "English", category: "school" },
+      { id: 121, ja: "日本語/国語", en: "Japanese", category: "school" }, { id: 122, ja: "数学", en: "math", category: "school" }, { id: 123, ja: "理科", en: "science", category: "school" },
+      { id: 124, ja: "社会", en: "social studies", category: "school" }, { id: 125, ja: "音楽", en: "music", category: "school" }, { id: 126, ja: "美術", en: "art", category: "school" },
+      { id: 127, ja: "体育", en: "PE", category: "school" }, { id: 128, ja: "歴史", en: "history", category: "school" }, { id: 129, ja: "筆箱", en: "pencil case", category: "school" },
+      { id: 130, ja: "定規", en: "ruler", category: "school" }, { id: 131, ja: "地図", en: "map", category: "school" }, { id: 132, ja: "ページ", en: "page", category: "school" },
+      { id: 133, ja: "質問", en: "question", category: "school" }, { id: 134, ja: "答え", en: "answer", category: "school" }, { id: 135, ja: "例", en: "example", category: "school" },
+      { id: 136, ja: "小学校", en: "elementary school", category: "school" }, { id: 137, ja: "中学校", en: "junior high school", category: "school" },
+      { id: 200, ja: "する/演奏する", en: "play", category: "verbs" }, { id: 201, ja: "好き", en: "like", category: "verbs" }, { id: 202, ja: "持っている/食べる", en: "have", category: "verbs" },
+      { id: 203, ja: "行く", en: "go", category: "verbs" }, { id: 204, ja: "来る", en: "come", category: "verbs" }, { id: 205, ja: "勉強する", en: "study", category: "verbs" },
+      { id: 206, ja: "食べる", en: "eat", category: "verbs" }, { id: 207, ja: "飲む", en: "drink", category: "verbs" }, { id: 208, ja: "読む", en: "read", category: "verbs" },
+      { id: 209, ja: "書く", en: "write", category: "verbs" }, { id: 210, ja: "見る", en: "look", category: "verbs" }, { id: 211, ja: "見る/会う", en: "see", category: "verbs" },
+      { id: 212, ja: "見る(テレビなど)", en: "watch", category: "verbs" }, { id: 213, ja: "聞く(音楽など)", en: "listen", category: "verbs" }, { id: 214, ja: "住んでいる", en: "live", category: "verbs" },
+      { id: 215, ja: "話す(言語)", en: "speak", category: "verbs" }, { id: 216, ja: "話す/おしゃべりする", en: "talk", category: "verbs" }, { id: 217, ja: "欲しい", en: "want", category: "verbs" },
+      { id: 218, ja: "料理する", en: "cook", category: "verbs" }, { id: 219, ja: "作る", en: "make", category: "verbs" }, { id: 220, ja: "使う", en: "use", category: "verbs" },
+      { id: 221, ja: "洗う", en: "wash", category: "verbs" }, { id: 222, ja: "開ける", en: "open", category: "verbs" }, { id: 223, ja: "閉める", en: "close", category: "verbs" },
+      { id: 224, ja: "走る", en: "run", category: "verbs" }, { id: 225, ja: "歩く", en: "walk", category: "verbs" }, { id: 226, ja: "泳ぐ", en: "swim", category: "verbs" },
+      { id: 227, ja: "歌う", en: "sing", category: "verbs" }, { id: 228, ja: "踊る", en: "dance", category: "verbs" }, { id: 229, ja: "助ける/手伝う", en: "help", category: "verbs" },
+      { id: 230, ja: "知っている", en: "know", category: "verbs" }, { id: 231, ja: "必要とする", en: "need", category: "verbs" }, { id: 232, ja: "働く", en: "work", category: "verbs" },
+      { id: 233, ja: "楽しむ", en: "enjoy", category: "verbs" }, { id: 234, ja: "始める", en: "start", category: "verbs" }, { id: 235, ja: "止まる/やめる", en: "stop", category: "verbs" },
+      { id: 236, ja: "試す/やってみる", en: "try", category: "verbs" }, { id: 237, ja: "愛する", en: "love", category: "verbs" }, { id: 238, ja: "買う", en: "buy", category: "verbs" },
+      { id: 239, ja: "訪問する", en: "visit", category: "verbs" }, { id: 240, ja: "教える", en: "teach", category: "verbs" }, { id: 241, ja: "練習する", en: "practice", category: "verbs" },
+      { id: 242, ja: "取る/連れて行く", en: "take", category: "verbs" }, { id: 243, ja: "手に入れる/着く", en: "get", category: "verbs" }, { id: 244, ja: "与える/あげる", en: "give", category: "verbs" },
+      { id: 245, ja: "見せる", en: "show", category: "verbs" }, { id: 246, ja: "言う", en: "say", category: "verbs" }, { id: 247, ja: "考える", en: "think", category: "verbs" },
+      { id: 248, ja: "座る", en: "sit", category: "verbs" }, { id: 249, ja: "立つ", en: "stand", category: "verbs" }, { id: 250, ja: "眠る", en: "sleep", category: "verbs" },
+      { id: 251, ja: "掃除する", en: "clean", category: "verbs" }, { id: 252, ja: "尋ねる", en: "ask", category: "verbs" }, { id: 253, ja: "答える", en: "answer", category: "verbs" },
+      { id: 254, ja: "呼ぶ/電話する", en: "call", category: "verbs" }, { id: 255, ja: "捕まえる", en: "catch", category: "verbs" }, { id: 256, ja: "確認する", en: "check", category: "verbs" },
+      { id: 257, ja: "切る", en: "cut", category: "verbs" }, { id: 258, ja: "描く", en: "draw", category: "verbs" }, { id: 259, ja: "見つける", en: "find", category: "verbs" },
+      { id: 260, ja: "飛ぶ", en: "fly", category: "verbs" }, { id: 261, ja: "忘れる", en: "forget", category: "verbs" }, { id: 262, ja: "学ぶ", en: "learn", category: "verbs" },
+      { id: 263, ja: "会う", en: "meet", category: "verbs" }, { id: 264, ja: "置く", en: "put", category: "verbs" }, { id: 265, ja: "売る", en: "sell", category: "verbs" },
+      { id: 266, ja: "送る", en: "send", category: "verbs" }, { id: 267, ja: "微笑む", en: "smile", category: "verbs" }, { id: 268, ja: "触れる", en: "touch", category: "verbs" },
+      { id: 269, ja: "待つ", en: "wait", category: "verbs" }, { id: 270, ja: "着ている", en: "wear", category: "verbs" }, { id: 271, ja: "心配する", en: "worry", category: "verbs" },
+      { id: 300, ja: "良い", en: "good", category: "adjectives" }, { id: 301, ja: "親切な/種類の", en: "kind", category: "adjectives" }, { id: 302, ja: "素晴らしい/素敵な", en: "nice", category: "adjectives" },
+      { id: 303, ja: "新しい", en: "new", category: "adjectives" }, { id: 304, ja: "古い", en: "old", category: "adjectives" }, { id: 305, ja: "大きい", en: "big", category: "adjectives" },
+      { id: 306, ja: "小さい", en: "small", category: "adjectives" }, { id: 307, ja: "長い", en: "long", category: "adjectives" }, { id: 308, ja: "短い", en: "short", category: "adjectives" },
+      { id: 309, ja: "背が高い", en: "tall", category: "adjectives" }, { id: 310, ja: "暑い/熱い", en: "hot", category: "adjectives" }, { id: 311, ja: "寒い/冷たい", en: "cold", category: "adjectives" },
+      { id: 312, ja: "暖かい", en: "warm", category: "adjectives" }, { id: 313, ja: "涼しい/かっこいい", en: "cool", category: "adjectives" }, { id: 314, ja: "幸せな", en: "happy", category: "adjectives" },
+      { id: 315, ja: "悲しい", en: "sad", category: "adjectives" }, { id: 316, ja: "忙しい", en: "busy", category: "adjectives" }, { id: 317, ja: "自由な/暇な", en: "free", category: "adjectives" },
+      { id: 318, ja: "簡単な", en: "easy", category: "adjectives" }, { id: 319, ja: "難しい/一生懸命に", en: "hard", category: "adjectives" }, { id: 320, ja: "面白い(滑稽)", en: "funny", category: "adjectives" },
+      { id: 321, ja: "面白い(興味深い)", en: "interesting", category: "adjectives" }, { id: 322, ja: "美しい", en: "beautiful", category: "adjectives" }, { id: 323, ja: "かわいい", en: "cute", category: "adjectives" },
+      { id: 324, ja: "人気のある", en: "popular", category: "adjectives" }, { id: 325, ja: "好きな/お気に入りの", en: "favorite", category: "adjectives" }, { id: 326, ja: "空腹の", en: "hungry", category: "adjectives" },
+      { id: 327, ja: "喉が渇いた", en: "thirsty", category: "adjectives" }, { id: 328, ja: "眠い", en: "sleepy", category: "adjectives" }, { id: 329, ja: "疲れた", en: "tired", category: "adjectives" },
+      { id: 330, ja: "病気の", en: "sick", category: "adjectives" }, { id: 331, ja: "元気な/晴れた", en: "fine", category: "adjectives" }, { id: 332, ja: "素晴らしい(G)", en: "great", category: "adjectives" },
+      { id: 333, ja: "素晴らしい(W)", en: "wonderful", category: "adjectives" }, { id: 334, ja: "ワクワクして", en: "excited", category: "adjectives" }, { id: 335, ja: "有名な", en: "famous", category: "adjectives" },
+      { id: 336, ja: "重要な", en: "important", category: "adjectives" }, { id: 337, ja: "特別な", en: "special", category: "adjectives" }, { id: 338, ja: "準備ができて", en: "ready", category: "adjectives" },
+      { id: 339, ja: "申し訳なく思って", en: "sorry", category: "adjectives" }, { id: 340, ja: "速い", en: "fast", category: "adjectives" }, { id: 341, ja: "遅い", en: "slow", category: "adjectives" },
+      { id: 342, ja: "怒った", en: "angry", category: "adjectives" }, { id: 343, ja: "悪い", en: "bad", category: "adjectives" }, { id: 344, ja: "きれいな", en: "clean", category: "adjectives" },
+      { id: 345, ja: "暗い", en: "dark", category: "adjectives" }, { id: 346, ja: "親愛なる", en: "dear", category: "adjectives" }, { id: 347, ja: "おいしい", en: "delicious", category: "adjectives" },
+      { id: 348, ja: "汚い", en: "dirty", category: "adjectives" }, { id: 349, ja: "早い", en: "early", category: "adjectives" }, { id: 350, ja: "満腹の/いっぱいの", en: "full", category: "adjectives" },
+      { id: 351, ja: "うれしい", en: "glad", category: "adjectives" }, { id: 352, ja: "重い", en: "heavy", category: "adjectives" }, { id: 353, ja: "高い", en: "high", category: "adjectives" },
+      { id: 354, ja: "大きい(L)", en: "large", category: "adjectives" }, { id: 355, ja: "遅刻した/遅い", en: "late", category: "adjectives" }, { id: 356, ja: "軽い/明るい", en: "light", category: "adjectives" },
+      { id: 357, ja: "小さい/少しの", en: "little", category: "adjectives" }, { id: 358, ja: "低い", en: "low", category: "adjectives" }, { id: 359, ja: "貧しい/かわいそうな", en: "poor", category: "adjectives" },
+      { id: 360, ja: "かわいい(P)", en: "pretty", category: "adjectives" }, { id: 361, ja: "正しい/右の", en: "right", category: "adjectives" }, { id: 362, ja: "柔らかい", en: "soft", category: "adjectives" },
+      { id: 363, ja: "強い", en: "strong", category: "adjectives" }, { id: 364, ja: "確信して", en: "sure", category: "adjectives" }, { id: 365, ja: "甘い", en: "sweet", category: "adjectives" },
+      { id: 366, ja: "弱い", en: "weak", category: "adjectives" }, { id: 367, ja: "間違った", en: "wrong", category: "adjectives" }, { id: 368, ja: "若い", en: "young", category: "adjectives" },
+      { id: 400, ja: "今日", en: "today", category: "time" }, { id: 401, ja: "明日", en: "tomorrow", category: "time" }, { id: 402, ja: "昨日", en: "yesterday", category: "time" },
+      { id: 403, ja: "今", en: "now", category: "time" }, { id: 404, ja: "いつ", en: "when", category: "time" }, { id: 405, ja: "前", en: "before", category: "time" },
+      { id: 406, ja: "後", en: "after", category: "time" }, { id: 407, ja: "朝", en: "morning", category: "time" }, { id: 408, ja: "午後", en: "afternoon", category: "time" },
+      { id: 409, ja: "夕方/晩", en: "evening", category: "time" }, { id: 410, ja: "夜", en: "night", category: "time" }, { id: 411, ja: "日/日中", en: "day", category: "time" },
+      { id: 412, ja: "週", en: "week", category: "time" }, { id: 413, ja: "月", en: "month", category: "time" }, { id: 414, ja: "年", en: "year", category: "time" },
+      { id: 415, ja: "時間", en: "time", category: "time" }, { id: 416, ja: "時間(hour)", en: "hour", category: "time" }, { id: 417, ja: "分", en: "minute", category: "time" },
+      { id: 418, ja: "日曜日", en: "Sunday", category: "time" }, { id: 419, ja: "月曜日", en: "Monday", category: "time" }, { id: 420, ja: "火曜日", en: "Tuesday", category: "time" },
+      { id: 421, ja: "水曜日", en: "Wednesday", category: "time" }, { id: 422, ja: "木曜日", en: "Thursday", category: "time" }, { id: 423, ja: "金曜日", en: "Friday", category: "time" },
+      { id: 424, ja: "土曜日", en: "Saturday", category: "time" },
+      { id: 500, ja: "晴れた", en: "sunny", category: "nature" }, { id: 501, ja: "曇った", en: "cloudy", category: "nature" }, { id: 502, ja: "雨の", en: "rainy", category: "nature" },
+      { id: 503, ja: "雪の", en: "snowy", category: "nature" }, { id: 504, ja: "風の強い", en: "windy", category: "nature" }, { id: 505, ja: "雨", en: "rain", category: "nature" },
+      { id: 506, ja: "雪", en: "snow", category: "nature" }, { id: 507, ja: "空", en: "sky", category: "nature" }, { id: 508, ja: "太陽", en: "sun", category: "nature" }, { id: 509, ja: "月", en: "moon", category: "nature" }, { id: 510, ja: "星", en: "star", category: "nature" }, { id: 511, ja: "海", en: "sea", category: "nature" },
+      { id: 512, ja: "川", en: "river", category: "nature" }, { id: 513, ja: "山", en: "mountain", category: "nature" }, { id: 514, ja: "木", en: "tree", category: "nature" },
+      { id: 515, ja: "花", en: "flower", category: "nature" }, { id: 516, ja: "森", en: "forest", category: "nature" }, { id: 517, ja: "庭", en: "garden", category: "nature" },
+      { id: 518, ja: "湖", en: "lake", category: "nature" }, { id: 519, ja: "石", en: "stone", category: "nature" }, { id: 520, ja: "地球", en: "earth", category: "nature" },
+      { id: 550, ja: "公園", en: "park", category: "places" }, { id: 551, ja: "家", en: "house", category: "places" }, { id: 552, ja: "家/家庭", en: "home", category: "places" },
+      { id: 553, ja: "部屋", en: "room", category: "places" }, { id: 554, ja: "台所", en: "kitchen", category: "places" }, { id: 555, ja: "浴室", en: "bathroom", category: "places" },
+      { id: 556, ja: "店", en: "store", category: "places" }, { id: 557, ja: "店/買い物", en: "shop", category: "places" }, { id: 558, ja: "駅", en: "station", category: "places" },
+      { id: 559, ja: "病院", en: "hospital", category: "places" }, { id: 560, ja: "レストラン", en: "restaurant", category: "places" }, { id: 561, ja: "町", en: "town", category: "places" },
+      { id: 562, ja: "都市", en: "city", category: "places" }, { id: 563, ja: "国", en: "country", category: "places" }, { id: 564, ja: "世界", en: "world", category: "places" },
+      { id: 565, ja: "動物園", en: "zoo", category: "places" }, { id: 566, ja: "アメリカ", en: "America", category: "places" }, { id: 567, ja: "オーストラリア", en: "Australia", category: "places" },
+      { id: 568, ja: "カナダ", en: "Canada", category: "places" }, { id: 569, ja: "中国", en: "China", category: "places" }, { id: 570, ja: "フランス", en: "France", category: "places" },
+      { id: 571, ja: "日本", en: "Japan", category: "places" }, { id: 572, ja: "イギリス", en: "UK", category: "places" }, { id: 573, ja: "銀行", en: "bank", category: "places" },
+      { id: 574, ja: "本屋", en: "bookstore", category: "places" }, { id: 575, ja: "デパート", en: "department store", category: "places" }, { id: 576, ja: "博物館/美術館", en: "museum", category: "places" },
+      { id: 577, ja: "スーパー", en: "supermarket", category: "places" },
+      { id: 600, ja: "食べ物", en: "food", category: "food" }, { id: 601, ja: "朝食", en: "breakfast", category: "food" }, { id: 602, ja: "昼食", en: "lunch", category: "food" },
+      { id: 603, ja: "夕食", en: "dinner", category: "food" }, { id: 604, ja: "パン", en: "bread", category: "food" }, { id: 605, ja: "米/ご飯", en: "rice", category: "food" },
+      { id: 606, ja: "肉", en: "meat", category: "food" }, { id: 607, ja: "魚", en: "fish", category: "food" }, { id: 608, ja: "卵", en: "egg", category: "food" },
+      { id: 609, ja: "果物", en: "fruit", category: "food" }, { id: 610, ja: "りんご", en: "apple", category: "food" }, { id: 611, ja: "オレンジ", en: "orange", category: "food" },
+      { id: 612, ja: "バナナ", en: "banana", category: "food" }, { id: 613, ja: "野菜", en: "vegetable", category: "food" }, { id: 614, ja: "牛乳", en: "milk", category: "food" },
+      { id: 615, ja: "水", en: "water", category: "food" }, { id: 616, ja: "お茶", en: "tea", category: "food" }, { id: 617, ja: "コーヒー", en: "coffee", category: "food" },
+      { id: 618, ja: "ジュース", en: "juice", category: "food" }, { id: 619, ja: "ケーキ", en: "cake", category: "food" }, { id: 620, ja: "チョコレート", en: "chocolate", category: "food" },
+      { id: 621, ja: "カレー", en: "curry", category: "food" }, { id: 622, ja: "ハンバーガー", en: "hamburger", category: "food" }, { id: 623, ja: "ピザ", en: "pizza", category: "food" },
+      { id: 624, ja: "サンドイッチ", en: "sandwich", category: "food" }, { id: 625, ja: "牛肉", en: "beef", category: "food" }, { id: 626, ja: "鶏肉", en: "chicken", category: "food" },
+      { id: 627, ja: "豚肉", en: "pork", category: "food" }, { id: 628, ja: "ジャガイモ", en: "potato", category: "food" }, { id: 629, ja: "トマト", en: "tomato", category: "food" },
+      { id: 630, ja: "スープ", en: "soup", category: "food" }, { id: 631, ja: "デザート", en: "dessert", category: "food" },
+      { id: 650, ja: "動物", en: "animal", category: "animals" }, { id: 651, ja: "犬", en: "dog", category: "animals" }, { id: 652, ja: "猫", en: "cat", category: "animals" },
+      { id: 653, ja: "鳥", en: "bird", category: "animals" }, { id: 654, ja: "魚", en: "fish", category: "animals" }, { id: 655, ja: "馬", en: "horse", category: "animals" },
+      { id: 656, ja: "牛", en: "cow", category: "animals" }, { id: 657, ja: "豚", en: "pig", category: "animals" }, { id: 658, ja: "羊", en: "sheep", category: "animals" },
+      { id: 659, ja: "猿", en: "monkey", category: "animals" }, { id: 660, ja: "ライオン", en: "lion", category: "animals" }, { id: 661, ja: "虎", en: "tiger", category: "animals" },
+      { id: 662, ja: "熊", en: "bear", category: "animals" }, { id: 663, ja: "象", en: "elephant", category: "animals" }, { id: 664, ja: "ウサギ", en: "rabbit", category: "animals" },
+      { id: 665, ja: "パンダ", en: "panda", category: "animals" }, { id: 666, ja: "ネズミ", en: "mouse", category: "animals" }, { id: 667, ja: "ペット", en: "pet", category: "animals" },
+      { id: 700, ja: "頭", en: "head", category: "body" }, { id: 701, ja: "顔", en: "face", category: "body" }, { id: 702, ja: "目", en: "eye", category: "body" },
+      { id: 703, ja: "耳", en: "ear", category: "body" }, { id: 704, ja: "鼻", en: "nose", category: "body" }, { id: 705, ja: "口", en: "mouth", category: "body" },
+      { id: 706, ja: "歯", en: "tooth", category: "body" }, { id: 707, ja: "手", en: "hand", category: "body" }, { id: 708, ja: "腕", en: "arm", category: "body" },
+      { id: 709, ja: "足(脚)", en: "leg", category: "body" }, { id: 710, ja: "足(足首以下)", en: "foot", category: "body" }, { id: 711, ja: "髪", en: "hair", category: "body" },
+      { id: 712, ja: "体", en: "body", category: "body" }, { id: 713, ja: "背中", en: "back", category: "body" }, { id: 714, ja: "指", en: "finger", category: "body" },
+      { id: 715, ja: "首", en: "neck", category: "body" }, { id: 716, ja: "肩", en: "shoulder", category: "body" },
+      { id: 750, ja: "色", en: "color", category: "daily" }, { id: 751, ja: "赤", en: "red", category: "daily" }, { id: 752, ja: "青", en: "blue", category: "daily" },
+      { id: 753, ja: "緑", en: "green", category: "daily" }, { id: 754, ja: "黄色", en: "yellow", category: "daily" }, { id: 755, ja: "黒", en: "black", category: "daily" },
+      { id: 756, ja: "白", en: "white", category: "daily" }, { id: 757, ja: "箱", en: "box", category: "daily" }, { id: 758, ja: "カップ", en: "cup", category: "daily" },
+      { id: 759, ja: "皿", en: "dish", category: "daily" }, { id: 760, ja: "コップ/ガラス", en: "glass", category: "daily" }, { id: 761, ja: "ベッド", en: "bed", category: "daily" },
+      { id: 762, ja: "写真", en: "picture", category: "daily" }, { id: 763, ja: "コンピューター", en: "computer", category: "daily" }, { id: 764, ja: "電話", en: "phone", category: "daily" },
+      { id: 765, ja: "テレビ", en: "TV", category: "daily" }, { id: 766, ja: "時計(掛け時計)", en: "clock", category: "daily" }, { id: 767, ja: "時計(腕時計)", en: "watch", category: "daily" },
+      { id: 768, ja: "車", en: "car", category: "daily" }, { id: 769, ja: "バス", en: "bus", category: "daily" }, { id: 770, ja: "自転車", en: "bike", category: "daily" },
+      { id: 771, ja: "電車", en: "train", category: "daily" }, { id: 772, ja: "飛行機", en: "plane", category: "daily" }, { id: 773, ja: "ボート", en: "boat", category: "daily" },
+      { id: 774, ja: "ピアノ", en: "piano", category: "daily" }, { id: 775, ja: "ギター", en: "guitar", category: "daily" }, { id: 776, ja: "ラケット", en: "racket", category: "daily" },
+      { id: 777, ja: "ボール", en: "ball", category: "daily" }, { id: 778, ja: "手紙", en: "letter", category: "daily" }, { id: 779, ja: "名前", en: "name", category: "daily" },
+      { id: 780, ja: "ゲーム", en: "game", category: "daily" }, { id: 781, ja: "歌", en: "song", category: "daily" }, { id: 782, ja: "映画", en: "movie", category: "daily" },
+      { id: 783, ja: "プレゼント", en: "present", category: "daily" }, { id: 784, ja: "お金", en: "money", category: "daily" }, { id: 785, ja: "茶色", en: "brown", category: "daily" },
+      { id: 786, ja: "橙色", en: "orange", category: "daily" }, { id: 787, ja: "桃色", en: "pink", category: "daily" },
+      { id: 800, ja: "何", en: "what", category: "others" }, { id: 801, ja: "どこ", en: "where", category: "others" }, { id: 802, ja: "いつ", en: "when", category: "others" },
+      { id: 803, ja: "誰", en: "who", category: "others" }, { id: 804, ja: "誰の", en: "whose", category: "others" }, { id: 805, ja: "どちら", en: "which", category: "others" },
+      { id: 806, ja: "どのように/どれくらい", en: "how", category: "others" }, { id: 807, ja: "そして", en: "and", category: "others" }, { id: 808, ja: "しかし", en: "but", category: "others" },
+      { id: 809, ja: "または", en: "or", category: "others" }, { id: 810, ja: "だから", en: "so", category: "others" }, { id: 811, ja: "もし〜なら", en: "if", category: "others" },
+      { id: 812, ja: "〜だから(理由)", en: "because", category: "others" }, { id: 813, ja: "はい", en: "yes", category: "others" }, { id: 814, ja: "いいえ", en: "no", category: "others" },
+      { id: 815, ja: "〜ではない", en: "not", category: "others" }, { id: 816, ja: "とても", en: "very", category: "others" }, { id: 817, ja: "本当に", en: "really", category: "others" },
+      { id: 818, ja: "よく/上手に", en: "well", category: "others" }, { id: 819, ja: "〜の中に", en: "in", category: "others" }, { id: 820, ja: "〜の上に", en: "on", category: "others" },
+      { id: 821, ja: "〜で/に", en: "at", category: "others" }, { id: 822, ja: "〜の近くに", en: "near", category: "others" }, { id: 823, ja: "〜の下に", en: "under", category: "others" },
+      { id: 824, ja: "〜へ/に", en: "to", category: "others" }, { id: 825, ja: "〜のために", en: "for", category: "others" }, { id: 826, ja: "〜と一緒に", en: "with", category: "others" },
+      { id: 827, ja: "〜の", en: "of", category: "others" }, { id: 828, ja: "〜について", en: "about", category: "others" }, { id: 829, ja: "〜から", en: "from", category: "others" },
+      { id: 830, ja: "〜のそばに", en: "by", category: "others" }, { id: 831, ja: "たくさんの", en: "many", category: "others" }
+    ];
+
+    var state = {
+      view: 'dashboard',
+      progress: { mastered: [], reviewNeeded: [], history: {} },
+      queue: [],
+      currentIndex: 0,
+      showAnswer: false,
+      currentCategory: 'all'
+    };
+
+    function init() {
+      try {
+        var saved = localStorage.getItem('vocab_progress_vanilla');
+        if(saved) state.progress = JSON.parse(saved);
+      } catch(e) {
+        console.warn("Save unavailable");
+      }
+      try {
+        updateDashboard();
+        renderCategories();
+      } catch(e) {
+        alert("Error: " + e.message);
+      }
+    }
+
+    function saveProgress() {
+      try { localStorage.setItem('vocab_progress_vanilla', JSON.stringify(state.progress)); } catch(e) {}
+      updateDashboard();
+    }
+
+    function resetData() {
+      if(!confirm('学習データをリセットしますか？')) return;
+      state.progress = { mastered: [], reviewNeeded: [], history: {} };
+      saveProgress();
+      location.reload();
+    }
+
+    function showDashboard() {
+      document.getElementById('view-quiz').classList.add('hidden');
+      document.getElementById('view-result').classList.add('hidden');
+      document.getElementById('view-dashboard').classList.remove('hidden');
+      updateDashboard();
+    }
+
+    function updateDashboard() {
+      document.getElementById('total-words-count').innerText = VOCABULARY_DATA.length;
+      document.getElementById('mastered-count').innerText = state.progress.mastered.length;
+      document.getElementById('review-count').innerText = state.progress.reviewNeeded.length;
+      var reviewArea = document.getElementById('review-btn-area');
+      if (state.progress.reviewNeeded.length > 0) {
+        reviewArea.classList.remove('hidden');
+        document.getElementById('review-msg').innerText = state.progress.reviewNeeded.length + "語の復習が必要です";
+      } else {
+        reviewArea.classList.add('hidden');
+      }
+      renderCategories(); 
+    }
+
+    function renderCategories() {
+      var grid = document.getElementById('category-grid');
+      grid.innerHTML = '';
+      
+      var cats = ['all', 'numbers', 'pronouns', 'people', 'school', 'verbs', 'adjectives', 'time', 'nature', 'places', 'food', 'animals', 'body', 'daily', 'others'];
+      
+      for(var i=0; i<cats.length; i++) {
+        var key = cats[i];
+        var info = CATEGORIES[key];
+        
+        var catWords = [];
+        if(key === 'all') {
+          catWords = VOCABULARY_DATA;
+        } else {
+          catWords = VOCABULARY_DATA.filter(function(w){ return w.category === key; });
+        }
+        
+        var total = catWords.length;
+        var mastered = catWords.filter(function(w){ return state.progress.mastered.indexOf(w.id) !== -1; }).length;
+        var percent = total === 0 ? 0 : Math.round((mastered / total) * 100);
+
+        var btn = document.createElement('button');
+        btn.className = 'ios-card cat-btn ios-btn';
+        
+        (function(k) {
+          btn.onclick = function() { startQuiz(k); };
+        })(key);
+        
+        var htmlStr = '<div class="flex justify-between items-center w-full"><div style="background-color: ' + info.color + '20; padding: 0.5rem; border-radius: 0.5rem; font-size: 1.5rem;">' + info.icon + '</div><span class="text-xs font-medium text-gray-400">' + total + '</span></div><div style="width: 100%;"><h3 class="font-semibold" style="margin: 0; margin-bottom: 0.25rem; color: #1C1C1E;">' + info.label + '</h3><div class="progress-bg"><div class="progress-bar" style="width: ' + percent + '%; background-color: ' + info.color + '"></div></div></div>';
+        
+        btn.innerHTML = htmlStr;
+        grid.appendChild(btn);
+      }
+    }
+
+    function startQuiz(cat) {
+      state.currentCategory = cat;
+      var list = [];
+      if(cat === 'review') {
+        list = VOCABULARY_DATA.filter(function(w){ return state.progress.reviewNeeded.indexOf(w.id) !== -1; });
+      } else if(cat === 'all') {
+        list = VOCABULARY_DATA.slice();
+      } else {
+        list = VOCABULARY_DATA.filter(function(w){ return w.category === cat; });
+      }
+      if(list.length === 0) { alert('単語がありません'); return; }
+      state.queue = list.sort(function() { return Math.random() - 0.5; });
+      state.currentIndex = 0;
+      document.getElementById('view-dashboard').classList.add('hidden');
+      document.getElementById('view-result').classList.add('hidden');
+      document.getElementById('view-quiz').classList.remove('hidden');
+      showCard();
+      setTimeout(initCanvas, 50);
+    }
+
+    function showCard() {
+      var word = state.queue[state.currentIndex];
+      var catInfo = CATEGORIES[word.category] || CATEGORIES['all'];
+      state.showAnswer = false;
+      document.getElementById('answer-area').classList.add('hidden');
+      document.getElementById('mask-area').classList.remove('hidden');
+      document.getElementById('btn-show-answer').classList.remove('hidden');
+      document.getElementById('btn-grade-area').classList.add('hidden');
+      clearCanvas();
+      document.getElementById('card-ja').innerText = word.ja;
+      document.getElementById('card-en').innerText = word.en;
+      document.getElementById('card-cat-icon').innerText = catInfo.icon;
+      document.getElementById('card-cat-label').innerText = catInfo.label;
+      var progressVal = ((state.currentIndex) / state.queue.length) * 100;
+      document.getElementById('quiz-progress-bar').style.width = progressVal + '%';
+      document.getElementById('quiz-progress-text').innerText = (state.currentIndex + 1) + " / " + state.queue.length;
+      var dots = document.getElementById('mask-dots');
+      dots.innerHTML = '';
+      for(var i=0; i<word.en.length; i++) {
+        var d = document.createElement('div');
+        d.className = 'mask-dot';
+        dots.appendChild(d);
+      }
+    }
+
+    function showAnswer() {
+      state.showAnswer = true;
+      document.getElementById('answer-area').classList.remove('hidden');
+      document.getElementById('mask-area').classList.add('hidden');
+      document.getElementById('btn-show-answer').classList.add('hidden');
+      document.getElementById('btn-grade-area').classList.remove('hidden');
+      speakCurrentWord();
+    }
+
+    function speakCurrentWord() {
+      var word = state.queue[state.currentIndex];
+      if('speechSynthesis' in window) {
+        window.speechSynthesis.cancel();
+        var u = new SpeechSynthesisUtterance(word.en);
+        u.lang = 'en-US';
+        window.speechSynthesis.speak(u);
+      }
+    }
+
+    function grade(isCorrect) {
+      var word = state.queue[state.currentIndex];
+      var pid = word.id;
+      if(!state.progress.history[pid]) state.progress.history[pid] = { attempts: 0, correct: 0 };
+      state.progress.history[pid].attempts++;
+      if(isCorrect) state.progress.history[pid].correct++;
+      if(isCorrect) {
+        if(state.progress.mastered.indexOf(pid) === -1) state.progress.mastered.push(pid);
+        state.progress.reviewNeeded = state.progress.reviewNeeded.filter(function(id){ return id !== pid; });
+      } else {
+        if(state.progress.reviewNeeded.indexOf(pid) === -1) state.progress.reviewNeeded.push(pid);
+        state.progress.mastered = state.progress.mastered.filter(function(id){ return id !== pid; });
+      }
+      saveProgress();
+      if(state.currentIndex < state.queue.length - 1) {
+        state.currentIndex++;
+        showCard();
+      } else {
+        showResult();
+      }
+    }
+
+    function showResult() {
+      document.getElementById('view-quiz').classList.add('hidden');
+      document.getElementById('view-result').classList.remove('hidden');
+      document.getElementById('view-result').style.display = 'flex';
+    }
+
+    function retryQuiz() {
+      startQuiz(state.currentCategory);
+    }
+
+    var canvas, ctx, isDrawing = false;
+    function initCanvas() {
+      canvas = document.getElementById('drawing-canvas');
+      if(!canvas) return;
+      var container = canvas.parentElement;
+      var rect = container.getBoundingClientRect();
+      var dpr = window.devicePixelRatio || 1;
+      canvas.width = rect.width * dpr;
+      canvas.height = (rect.height - 40) * dpr; 
+      ctx = canvas.getContext('2d');
+      ctx.scale(dpr, dpr);
+      ctx.strokeStyle = "#1C1C1E";
+      ctx.lineWidth = 3;
+      ctx.lineCap = "round";
+      ctx.lineJoin = "round";
+      canvas.onmousedown = startDraw;
+      canvas.onmousemove = draw;
+      canvas.onmouseup = stopDraw;
+      canvas.onmouseleave = stopDraw;
+      canvas.ontouchstart = function(e) { e.preventDefault(); startDraw(e.touches[0]); };
+      canvas.ontouchmove = function(e) { e.preventDefault(); draw(e.touches[0]); };
+      canvas.ontouchend = function(e) { e.preventDefault(); stopDraw(); };
+    }
+
+    function getPos(e) {
+      var rect = canvas.getBoundingClientRect();
+      return { x: e.clientX - rect.left, y: e.clientY - rect.top };
+    }
+
+    function startDraw(e) {
+      isDrawing = true;
+      var pos = getPos(e);
+      ctx.beginPath();
+      ctx.moveTo(pos.x, pos.y);
+    }
+
+    function draw(e) {
+      if(!isDrawing) return;
+      var pos = getPos(e);
+      ctx.lineTo(pos.x, pos.y);
+      ctx.stroke();
+    }
+
+    function stopDraw() {
+      isDrawing = false;
+      ctx.closePath();
+    }
+
+    function clearCanvas() {
+      if(ctx && canvas) {
+        ctx.clearRect(0, 0, canvas.width, canvas.height);
+      }
+    }
+
+    window.onload = init;
+  </script>
+</body>
+</html>
